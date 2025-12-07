@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Minecraft name checker </title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background: radial-gradient(circle at top, #00c6ff, #0072ff 60%, #0a1a3c);
+            font-family: "Segoe UI", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 50px;
+            width: 480px;
+            text-align: center;
+            box-shadow: 0 10px 45px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h1 {
+            font-size: 40px;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            border-radius: 15px;
+            border: none;
+            outline: none;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            color: white;
+            transition: 0.3s;
+            font-weight: bold;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        #result {
+            margin-top: 28px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>  Minecraft name checker</h1>
+        <input id="nameInput" type="text" placeholder="enter name " />
+        <button onclick="checkName()">check </button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function checkName() {
+            const name = document.getElementById("nameInput").value.trim();
+            const resultBox = document.getElementById("result");
+
+            if (!name) {
+                resultBox.textContent = "Enter a valid name";
+                resultBox.style.color = "#ffea00";
+                return;
+            }
+
+            resultBox.textContent = "Checking...";
+            resultBox.style.color = "white";
+
+            try {
+                const response = await fetch(`https://playerdb.co/api/player/minecraft/${name}`);
+                const data = await response.json();
+
+                if (data.success === false) {
+                    resultBox.textContent = "available";
+                    resultBox.style.color = "#00ff7f";
+                    return;
+                }
+
+                if (data.success === true) {
+                    resultBox.textContent = "not available";
+                    resultBox.style.color = "#ff4b4b";
+                    return;
+                }
+
+                resultBox.textContent = "erroe";
+                resultBox.style.color = "orange";
+            } catch (e) {
+                resultBox.textContent = "error w server";
+                resultBox.style.color = "orange";
+            }
+        }
+    </script>
+</body>
+</html>
